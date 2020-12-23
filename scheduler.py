@@ -53,16 +53,17 @@ def main():
     tasks.add(task8)
     #wbr,tasks,time_interval,time_range,cross_over_prob,mutation_prob,pop_size,generations
     wbr = 0.7
+    start_time = 8 #hour
     time_interval = 20 #mins
     time_range = 120 #mins
     cross_over_prob = 0.8
     mutation_prob = 0.8
     pop_size = 10
-    generations = 10
+    generations = 5
     my_schedule = Scheduler(wbr,tasks,time_interval,time_range,cross_over_prob,mutation_prob,pop_size,generations)
     schedule = my_schedule.create_schedule()
     print(schedule)
-    UI = Schedule_UI.Schedule_UI(schedule)
+    UI = Schedule_UI.Schedule_UI(schedule,time_interval,start_time)
     UI.loop()
 
 
