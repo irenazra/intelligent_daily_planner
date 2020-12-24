@@ -5,3 +5,5 @@ class Task:
         self.ect = estimated_completion_time
         self.desire = desire_level
         self.priority = importance
+
+        #you can add urgence!

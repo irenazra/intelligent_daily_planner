@@ -40,16 +40,18 @@ class Schedule_UI:
             description = " "
             if ( task == "break"):
                 description = "break"
+                name_frame_color = "pale green"
             else:
                 description = task.name
+                name_frame_color = "salmon"
 
-            frame = tk.Frame(master=self.window, width=100, height=100, bg="salmon")
+            frame = tk.Frame(master=self.window, width=100, height=100, bg="bisque")
 
             time_frame = tk.Frame(master = frame, width=50, height=100, bg="salmon")
-            name_frame = tk.Frame(master = frame, width=50, height=100, bg="salmon")
+            name_frame = tk.Frame(master = frame, width=50, height=100, bg= name_frame_color)
 
             time_label = tk.Label(master=time_frame, text=str(item_counter), bg="bisque")
-            name_label = tk.Label(master=name_frame, text=description, bg="salmon")
+            name_label = tk.Label(master=name_frame, text=description, bg=name_frame_color)
 
             time_label.pack()
             name_label.pack()

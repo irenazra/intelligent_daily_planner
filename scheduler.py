@@ -10,7 +10,7 @@ class Scheduler:
         self.total_items = int(time_range / time_interval)
         self.cross_over_prob = cross_over_prob
         self.mutation_prob = mutation_prob
-        self.genetic_algorithms = Genetic_Algorithms.Genetic_Algorithms(self.time_interval)
+        self.genetic_algorithms = Genetic_Algorithms.Genetic_Algorithms(self.time_interval,self.cross_over_prob,self.mutation_prob,self.work_break_ratio)
         self.population_size = pop_size
         self.num_generations = generations
     
@@ -36,10 +36,10 @@ def main():
     print("running main")
     tasks = set()
     #task_name, estimated_completion_time, desire_level, importance):
-    task1 = Task.Task("Do CS homework", 20, 3, 10)
+    task1 = Task.Task("Do CS homework", 60, 3, 10)
     task2 = Task.Task("Exercise", 40, 8, 1)
     task3 = Task.Task("Meditate", 20, 2, 9)
-    task4 = Task.Task("Finish job applications", 20, 6, 3)
+    task4 = Task.Task("Finish job applications", 60, 9, 3)
     task5 = Task.Task("Clean the house", 60, 3, 8)
     task6 = Task.Task("Cook", 40, 8, 1)
     task7 = Task.Task("Run", 20, 2, 8)
@@ -56,11 +56,11 @@ def main():
     wbr = 0.7
     start_time = 8 #hour
     time_interval = 20 #mins
-    time_range = 240 #mins
-    cross_over_prob = 0.8
-    mutation_prob = 0.8
-    pop_size = 10
-    generations = 2
+    time_range = 400 #mins
+    cross_over_prob = 0.7
+    mutation_prob = 0.4
+    pop_size = 20
+    generations = 20
     my_schedule = Scheduler(wbr,tasks,time_interval,time_range,cross_over_prob,mutation_prob,pop_size,generations)
     schedule = my_schedule.create_schedule()
     print(schedule)

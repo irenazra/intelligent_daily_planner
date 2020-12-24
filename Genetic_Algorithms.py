@@ -2,9 +2,12 @@ import random
 from collections import defaultdict
 
 class Genetic_Algorithms: 
-    def __init__ (self,interval) :
+    def __init__ (self,interval,cross_over_prob, mutation_prob,wbr) :
         self.interval = interval 
-        print("Entered")
+        self.cross_over_prob = cross_over_prob
+        self.mutation_prob = mutation_prob
+        self.wbr = wbr
+       
 
     #Define fitness function
     def fitness(self,schedule,work_break_ratio):
@@ -25,7 +28,7 @@ class Genetic_Algorithms:
         score = score + self.consider_desire_level(schedule)
 
         if (schedule[0] == "break" or schedule[len(schedule)-1] == "break"):
-            score = score - 20
+            score = score - 30
         
 
         #print ("evaluating breaks")
@@ -45,7 +48,7 @@ class Genetic_Algorithms:
 
         #print ("evaluating work and break ratio")
         abs_difference = abs(work_break_ratio - (work_amount - break_amount))
-        score = score - (abs_difference * 5)
+        score = score - (abs_difference * 7)
         
         
         #print("evaluating task priorities")
@@ -64,7 +67,7 @@ class Genetic_Algorithms:
             repeat_time = schedule.count(item)
             max_accepted_num_repeats = (int) (item.ect / self.interval)
             if (repeat_time > max_accepted_num_repeats):
-                score_update = score_update - (5 * (repeat_time - max_accepted_num_repeats))
+                score_update = score_update - (10 * (repeat_time - max_accepted_num_repeats))
 
         return score_update
 
@@ -87,6 +90,7 @@ class Genetic_Algorithms:
     #Randomly generate initial population
     def initialize(self, population_size,tasks,work_break_ratio, total_items):
         #print( "in initialize")
+        self.tasks = tasks
         pop = []
         counter = 0
         while (counter < population_size):
@@ -117,16 +121,16 @@ class Genetic_Algorithms:
                 
         
             
-    def mate_and_mutate(self,parent_one, parent_two,cross_over_prob, mutation_prob):
-        cross_num = random()
-        mutation_num = random()
+    def mate_and_mutate(self,parent_one, parent_two,cross_over_prob, mutation_prob,total_items):
+        cross_num = (random.uniform(0,1)) 
+        mutation_num = (random.uniform(0,1)) 
         children = [parent_one, parent_two]
         
         if (cross_num <= cross_over_prob):
-            children = cross_over(parent_one,parent_two,total_items)
+            children = self.cross_over(parent_one,parent_two,total_items)
             
         if (mutation_num <= mutation_prob):
-            children = mutate(children)
+            children = self.mutate(children,total_items)
             
         return children
         
@@ -147,8 +151,23 @@ class Genetic_Algorithms:
         return [first_child,second_child]
         
     #Don't know how this should be yet
-    def mutate (self,offspring_list):
+    def mutate (self,offspring_list,total_items):
+        num_mutations = (int)(random.uniform(0,4)) 
+        for i in range(0,num_mutations):
+            for o in offspring_list:
+                self.insert_random_task(o,total_items)
+
         return offspring_list
+
+    def insert_random_task(self,schedule,total_items):
+        work_or_break = (random.uniform(0,1)) 
+        if (self.wbr < work_or_break):
+            random_task = "break"
+        else:
+            random_task = random.choice(list(self.tasks))
+
+        random_place = (int)(random.uniform(1,total_items - 1)) 
+        schedule[random_place] = random_task
         
     def fitness_greater(self,first,second):
         first_fitness = first[1]
@@ -174,8 +193,13 @@ class Genetic_Algorithms:
         new_generation = []
    
         for i in range(0, len(population) - 1):
-            two_children = self.cross_over(population[i][0], population[i+1][0],total_items)
+            #print('PRITNING PARENT')
+            #print(population[i])
+            two_children = self.mate_and_mutate(population[i][0], population[i+1][0],self.cross_over_prob, self.mutation_prob,total_items)
+
             new_generation.append(two_children[0])
+            #print('PRINTING CHILDREN')
+            #print(two_children[0])
             if (len(new_generation) == population_size):
                 break
             new_generation.append(two_children[1])
