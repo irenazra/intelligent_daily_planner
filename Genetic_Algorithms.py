@@ -2,7 +2,8 @@ import random
 from collections import defaultdict
 
 class Genetic_Algorithms: 
-    def __init__ (self) :
+    def __init__ (self,interval) :
+        self.interval = interval 
         print("Entered")
 
     #Define fitness function
@@ -16,8 +17,15 @@ class Genetic_Algorithms:
         
         #punish long stretches of breaks
         break_stretch = 0
-        break_stretch_punishment = 2
+        break_stretch_punishment = 10
         in_break = False
+
+        score = score + self.detect_repetitive_tasks(schedule)
+
+        score = score + self.consider_desire_level(schedule)
+
+        if (schedule[0] == "break" or schedule[len(schedule)-1] == "break"):
+            score = score - 20
         
 
         #print ("evaluating breaks")
@@ -37,16 +45,44 @@ class Genetic_Algorithms:
 
         #print ("evaluating work and break ratio")
         abs_difference = abs(work_break_ratio - (work_amount - break_amount))
-        score = score - abs_difference
+        score = score - (abs_difference * 5)
         
         
         #print("evaluating task priorities")
         #prioritizes more important tasks
         for item in schedule:
             if not (item == "break"):
-                score += item.priority
+                score += item.priority 
 
         return score
+
+    def detect_repetitive_tasks(self,schedule):
+        score_update = 0
+        for item in schedule:
+            if (item == "break"):
+                continue
+            repeat_time = schedule.count(item)
+            max_accepted_num_repeats = (int) (item.ect / self.interval)
+            if (repeat_time > max_accepted_num_repeats):
+                score_update = score_update - (5 * (repeat_time - max_accepted_num_repeats))
+
+        return score_update
+
+    def consider_desire_level(self,schedule):
+        score_update = 0
+        distance_from_last_break = 0
+        for item in schedule:
+            if (item == "break"):
+                distance_from_last_break = 0
+                continue
+            desire_score = distance_from_last_break * item.desire
+            desire_score_scale = desire_score / len(schedule)
+            score_update = score_update + desire_score
+
+
+        return score_update
+
+
     
     #Randomly generate initial population
     def initialize(self, population_size,tasks,work_break_ratio, total_items):
