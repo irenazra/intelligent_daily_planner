@@ -27,6 +27,10 @@ class Genetic_Algorithms:
 
         score = score + self.consider_desire_level(schedule)
 
+        score = score + self.detect_illegal_divisions(schedule)
+
+        score = score + self.reward_undivided_tasks(schedule)
+
         if (schedule[0] == "break" or schedule[len(schedule)-1] == "break"):
             score = score - 100
         
@@ -48,7 +52,7 @@ class Genetic_Algorithms:
 
         #print ("evaluating work and break ratio")
         abs_difference = abs((work_break_ratio  - (work_amount / (break_amount+work_amount))))
-        score = score - (abs_difference * 50)
+        score = score - (abs_difference * 70)
         
         
         #print("evaluating task priorities")
@@ -70,6 +74,45 @@ class Genetic_Algorithms:
                 score_update = score_update - (10 * (repeat_time - max_accepted_num_repeats))
 
         return score_update
+
+    def detect_illegal_divisions(self,schedule):
+        score_update = 0
+        for i,item in enumerate(schedule):
+            if (item == "break"):
+                continue
+            if (item.can_divide == False):
+                saw_another_task = False
+                for j in range(i, len(schedule) - 1):
+                    if (schedule[j] == item):
+                        if (saw_another_task):
+                            score_update = score_update - 200
+                            break
+                    else:
+                        saw_another_task = True
+        return score_update
+
+    def reward_undivided_tasks(self,schedule):
+        score_update = 0
+        last_index = 0
+        while(last_index < len(schedule)):
+            item = schedule[last_index]
+            if (item == "break"):
+                last_index = last_index + 1
+                continue
+            if (item.can_divide == False):
+                ideal_item_length = (int) (item.ect/self.interval)
+                bound = min(len(schedule) - 1, last_index + ideal_item_length)
+            
+                for i in range(last_index +1, bound):
+                    if (schedule[i] == item):
+                        score_update = score_update + 10
+                last_index = last_index + 1+ ideal_item_length
+            else:
+                last_index = last_index + 1
+
+        return score_update
+                
+        
 
     def consider_desire_level(self,schedule):
         score_update = 0
@@ -111,11 +154,21 @@ class Genetic_Algorithms:
             #creates a random number between 0 and 1
             rand = random.uniform(0,1)
             if (rand < work_break_ratio):
-                chromosome.append(random.choice(list(tasks)))
+                random_task = random.choice(list(tasks))
+                if (not random_task.can_divide):
+                    num_items_needed = (int) (random_task.ect/self.interval)
+                    if (counter + num_items_needed <total_items):
+                        for i in range(0,num_items_needed):
+                            chromosome.append(random_task)
+                            counter = counter + 1
+                else:
+                    chromosome.append(random_task)
+                    counter = counter + 1
             else:
                 chromosome.append("break")
+                counter = counter + 1
             
-            counter = counter + 1
+            
                 
         return chromosome
                 
