@@ -3,18 +3,21 @@ import tkinter as tk
 class Schedule_UI:
     def __init__(self,schedule_list,time_interval,start_time):
         self.window = tk.Tk()
+        self.window.title("Best Schedules!")
         self.schedule_list = schedule_list
         self.time_interval = time_interval
         self.start_time = start_time
+        
 
-    def print_best_schedule(self):
-        #print("BEST SCHEDULE")
-        #print(self.schedule_list[0])
-        self.show_schedule(self.schedule_list[0])
+    def print_best_schedule(self,num):
+        for i in range (0,num):
+            self.show_schedule(self.schedule_list[i])
+        
         
 
     def show_schedule(self, one_schedule):
-        title_frame = tk.Frame(master = self.window, width=100, height=100, bg="turquoise2")
+        schedule_frame = tk.Frame(master = self.window,width = 200, height = 700)
+        title_frame = tk.Frame(master = schedule_frame, width=100, height=100, bg="turquoise2")
         title_label = tk.Label(master= title_frame, text="Schedule", bg="turquoise2")
         title_label.pack()
         title_frame.pack(fill=tk.X)
@@ -45,7 +48,8 @@ class Schedule_UI:
                 description = task.name
                 name_frame_color = "salmon"
 
-            frame = tk.Frame(master=self.window, width=100, height=100, bg="bisque")
+            frame = tk.Frame(master=schedule_frame, width=100, height=100, bg="bisque")
+            
 
             time_frame = tk.Frame(master = frame, width=50, height=100, bg="salmon")
             name_frame = tk.Frame(master = frame, width=50, height=100, bg= name_frame_color)
@@ -67,6 +71,7 @@ class Schedule_UI:
             frame.pack(fill=tk.X)
 
             item_counter = item_counter + 1
+            schedule_frame.pack(side = tk.LEFT)
         
 
     def clean_fitness_info (self, reversed_schedule):
@@ -78,8 +83,8 @@ class Schedule_UI:
         return cleaned
 
 
-    def loop (self):
-        self.print_best_schedule()
+    def loop (self,num_schedules):
+        self.print_best_schedule(num_schedules)
         self.window.mainloop()
 
 

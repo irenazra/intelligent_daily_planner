@@ -16,14 +16,14 @@ class Scheduler:
     
 
     def create_schedule (self):
-        print("Creating schedule")
+        #print("Creating schedule")
         initial_population = self.genetic_algorithms.initialize(self.population_size,self.tasks,self.work_break_ratio, self.total_items)
-        print(initial_population)
+        #print(initial_population)
         current_population = initial_population
         counter = self.num_generations
         while (counter > 0):
-            print("in while loop")
-            print(counter)
+            #print("in while loop")
+            #print(counter)
             next_gen = self.genetic_algorithms.next_generation (current_population, self.population_size,self.total_items)
             next_gen_assessed = self.genetic_algorithms.assess_fitness_of_generation (next_gen, self.work_break_ratio)
             current_population = next_gen_assessed
@@ -57,15 +57,15 @@ def main():
     start_time = 8 #hour
     time_interval = 20 #mins
     time_range = 400 #mins
-    cross_over_prob = 0.7
-    mutation_prob = 0.4
-    pop_size = 20
-    generations = 20
+    cross_over_prob = 0.8
+    mutation_prob = 0.7
+    pop_size = 100
+    generations = 10
     my_schedule = Scheduler(wbr,tasks,time_interval,time_range,cross_over_prob,mutation_prob,pop_size,generations)
     schedule = my_schedule.create_schedule()
     print(schedule)
     UI = Schedule_UI.Schedule_UI(schedule,time_interval,start_time)
-    UI.loop()
+    UI.loop(5)
 
 
 if __name__ == "__main__":

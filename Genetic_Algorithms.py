@@ -28,7 +28,7 @@ class Genetic_Algorithms:
         score = score + self.consider_desire_level(schedule)
 
         if (schedule[0] == "break" or schedule[len(schedule)-1] == "break"):
-            score = score - 30
+            score = score - 100
         
 
         #print ("evaluating breaks")
@@ -47,8 +47,8 @@ class Genetic_Algorithms:
         
 
         #print ("evaluating work and break ratio")
-        abs_difference = abs(work_break_ratio - (work_amount - break_amount))
-        score = score - (abs_difference * 7)
+        abs_difference = abs((work_break_ratio  - (work_amount / (break_amount+work_amount))))
+        score = score - (abs_difference * 50)
         
         
         #print("evaluating task priorities")
@@ -138,8 +138,8 @@ class Genetic_Algorithms:
         
     def cross_over (self,first_parent,second_parent,total_items):
         cross_point = (int)(random.uniform(0,total_items)) 
-        print("CROSS POINT")
-        print(cross_point)
+        #print("CROSS POINT")
+        #print(cross_point)
         first_child = []
         second_child = []
         
