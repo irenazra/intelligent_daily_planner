@@ -11,14 +11,12 @@ class Genetic_Algorithms:
 
     #Define fitness function
     def fitness(self,schedule,work_break_ratio):
-        #print("calculating fitness")
+
         score = 0
         
-        #balanced with breaks in between
         break_amount = 0
         work_amount = 0 
-        
-        #punish long stretches of breaks
+
         break_stretch = 0
         break_stretch_punishment = 10
         in_break = False
@@ -34,28 +32,25 @@ class Genetic_Algorithms:
         if (schedule[0] == "break" or schedule[len(schedule)-1] == "break"):
             score = score - 100
         
-
-        #print ("evaluating breaks")
         for item in schedule:
             if (item == "break"):
                 break_amount = break_amount + 1
-                
+                if (in_break):
+                    break_stretch = break_stretch + 1
                 in_break = True
-                break_stretch = break_stretch + 1
-                
+     
             else :
                 in_break = False
-                score = score - (break_stretch * break_stretch_punishment)
+                if (break_stretch >= 2):
+                    score = score - (break_stretch * break_stretch_punishment)
                 break_stretch = 0
                 work_amount = work_amount + 1
         
 
-        #print ("evaluating work and break ratio")
         abs_difference = abs((work_break_ratio  - (work_amount / (break_amount+work_amount))))
         score = score - (abs_difference * 70)
         
         
-        #print("evaluating task priorities")
         #prioritizes more important tasks
         for item in schedule:
             if not (item == "break"):
@@ -80,16 +75,26 @@ class Genetic_Algorithms:
         for i,item in enumerate(schedule):
             if (item == "break"):
                 continue
+
             if (item.can_divide == False):
-                saw_another_task = False
-                for j in range(i, len(schedule) - 1):
-                    if (schedule[j] == item):
-                        if (saw_another_task):
-                            score_update = score_update - 200
-                            break
-                    else:
-                        saw_another_task = True
+                score_update =  score_update + self.detect_illegal_divisions_helper(schedule,i,item)
+                
+
         return score_update
+
+    def detect_illegal_divisions_helper(self,schedule,i,item):
+        score_update = 0
+        saw_another_task = False
+        for j in range(i, len(schedule) - 1):
+            if (schedule[j] == item):
+                if (saw_another_task):
+                    score_update = score_update - 200
+                    break
+            else:
+                saw_another_task = True
+        return score_update
+
+
 
     def reward_undivided_tasks(self,schedule):
         score_update = 0
@@ -122,7 +127,6 @@ class Genetic_Algorithms:
                 distance_from_last_break = 0
                 continue
             desire_score = distance_from_last_break * item.desire
-            desire_score_scale = desire_score / len(schedule)
             score_update = score_update + desire_score
 
 
@@ -139,21 +143,16 @@ class Genetic_Algorithms:
         counter = 0
         while (counter < population_size):
             ind = self.make_individual(tasks, work_break_ratio, total_items)
-     
             ind_fitness = self.fitness(ind,work_break_ratio)
             pop.append((ind,ind_fitness))
-            #print("finished making one individual")
             counter = counter + 1
             
         return pop
 
 
     def make_individual(self,tasks,work_break_ratio,total_items):
-        print("DO WE EVEN ENTER HERE?")
-        #print("making individual")
+
         counter = 0
-        print("TOTAL ITEMS IS:")
-        print(total_items)
         chromosome = []
         while (counter < total_items):
             #creates a random number between 0 and 1
@@ -161,21 +160,24 @@ class Genetic_Algorithms:
             if (rand < work_break_ratio):
                 random_task = random.choice(list(tasks))
                 if (not random_task.can_divide):
-                    num_items_needed = (int) (random_task.ect/self.interval)
-                    if (counter + num_items_needed <total_items):
-                        for i in range(0,num_items_needed):
-                            chromosome.append(random_task)
-                            counter = counter + 1
+                    self.make_individual_helper(tasks,counter,chromosome,random_task,total_items)
                 else:
                     chromosome.append(random_task)
                     counter = counter + 1
             else:
                 chromosome.append("break")
                 counter = counter + 1
-            
-            
-                
+              
         return chromosome
+
+    def make_individual_helper(self,tasks,counter,chromosome,random_task,total_items):
+       
+        num_items_needed = (int) (random_task.ect/self.interval)
+        if (counter + num_items_needed <total_items):
+            for i in range(0,num_items_needed):
+                chromosome.append(random_task)
+                counter = counter + 1
+
                 
         
             
@@ -196,8 +198,6 @@ class Genetic_Algorithms:
         
     def cross_over (self,first_parent,second_parent,total_items):
         cross_point = (int)(random.uniform(0,total_items)) 
-        #print("CROSS POINT")
-        #print(cross_point)
         first_child = []
         second_child = []
         
@@ -251,13 +251,11 @@ class Genetic_Algorithms:
         new_generation = []
    
         for i in range(0, len(population) - 1):
-            #print('PRITNING PARENT')
-            #print(population[i])
+
             two_children = self.mate_and_mutate(population[i][0], population[i+1][0],self.cross_over_prob, self.mutation_prob,total_items)
 
             new_generation.append(two_children[0])
-            #print('PRINTING CHILDREN')
-            #print(two_children[0])
+
             if (len(new_generation) == population_size):
                 break
             new_generation.append(two_children[1])

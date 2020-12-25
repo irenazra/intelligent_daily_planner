@@ -26,21 +26,15 @@ class Schedule_UI:
         
 
         one_schedule[0].reverse()
-        #cleaned_schedule = self.clean_fitness_info(schedule)
         item_counter = 0
 
 
         for i in range(0,len(one_schedule[0])):
-            #print("PRINTING SCHEDULE")
-            #print(one_schedule[0])
 
-            #print("DO WE ENTER HERE?")
-            #rand_color = (int)(random.uniform(0,3)) 
+
             task = one_schedule[0][i]
-            
-            #print("PRINTING TASK ")
-            #print (task)
-            description = " "
+
+        
             if ( task == "break"):
                 description = "break"
                 name_frame_color = "pale green"
@@ -60,8 +54,7 @@ class Schedule_UI:
             time_label.pack()
             name_label.pack()
 
-            #time_frame.grid(column=0, row=0)
-            #name_frame.grid(column=1, row=0)
+
 
             time_frame.pack(side = tk.LEFT)
             name_frame.pack(side = tk.LEFT)
@@ -86,10 +79,6 @@ class Schedule_UI:
     def loop (self,num_schedules):
         self.print_best_schedule(num_schedules)
         self.window.mainloop()
-
-
-#if __name__ == "__main__":
-#    UI = Schedule_UI()
 
     
 

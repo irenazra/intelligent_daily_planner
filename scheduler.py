@@ -16,14 +16,13 @@ class Scheduler:
     
 
     def create_schedule (self):
-        #print("Creating schedule")
+   
         initial_population = self.genetic_algorithms.initialize(self.population_size,self.tasks,self.work_break_ratio, self.total_items)
-        #print(initial_population)
+
         current_population = initial_population
         counter = self.num_generations
         while (counter > 0):
-            #print("in while loop")
-            #print(counter)
+
             next_gen = self.genetic_algorithms.next_generation (current_population, self.population_size,self.total_items)
             next_gen_assessed = self.genetic_algorithms.assess_fitness_of_generation (next_gen, self.work_break_ratio)
             current_population = next_gen_assessed
@@ -32,10 +31,10 @@ class Scheduler:
         return current_population
 
 
-def main():
+def test():
     print("running main")
     tasks = set()
-    #task_name, estimated_completion_time, desire_level, importance):
+    #(task_name, estimated_completion_time, desire_level, importance)
     task1 = Task.Task("Do CS homework", 60, 3, 10, True)
     task2 = Task.Task("Exercise", 40, 8, 1, True)
     task3 = Task.Task("Meditate", 20, 2, 9, True)
@@ -69,4 +68,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    test()
