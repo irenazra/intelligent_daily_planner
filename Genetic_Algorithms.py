@@ -132,12 +132,14 @@ class Genetic_Algorithms:
     
     #Randomly generate initial population
     def initialize(self, population_size,tasks,work_break_ratio, total_items):
-        #print( "in initialize")
+     
         self.tasks = tasks
+   
         pop = []
         counter = 0
         while (counter < population_size):
             ind = self.make_individual(tasks, work_break_ratio, total_items)
+     
             ind_fitness = self.fitness(ind,work_break_ratio)
             pop.append((ind,ind_fitness))
             #print("finished making one individual")
@@ -147,8 +149,11 @@ class Genetic_Algorithms:
 
 
     def make_individual(self,tasks,work_break_ratio,total_items):
+        print("DO WE EVEN ENTER HERE?")
         #print("making individual")
         counter = 0
+        print("TOTAL ITEMS IS:")
+        print(total_items)
         chromosome = []
         while (counter < total_items):
             #creates a random number between 0 and 1
