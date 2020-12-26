@@ -143,6 +143,8 @@ class User_Input_Interface:
         end_min =(int) (self.end_min_combobox.get())
 
         time_range = self.give_minute_difference(start_hour,start_min,end_hour,end_min)
+        print("TIME RANGE IS:   ")
+        print(time_range)
 
 
         cross_over_prob = 0.8
@@ -160,14 +162,17 @@ class User_Input_Interface:
        
 
     def give_minute_difference(self,hour1,min1,hour2,min2):
-        #print(hour1)
-        #print(min1)
-        #print(hour2)
-        #print(min2)
+
         hour_diff = hour2 - hour1
-        #print(hour_diff)
         min_diff = min2 - min1
-        #print(min_diff)
+
+        time_range = (hour_diff * 60 ) + min_diff
+
+        if (time_range < 0):
+            until_midnight = self.give_minute_difference(hour1,min1,24,0)
+            after_midnight = self.give_minute_difference(0,0,hour2,min2)
+            return until_midnight + after_midnight
+
 
         return (hour_diff * 60 ) + min_diff
 

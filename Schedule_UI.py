@@ -101,7 +101,7 @@ class Schedule_UI:
         if (new_min > 60):
             added_hours = new_min // 60
             new_min = new_min - (added_hours * 60)
-            total_hours = hour + added_hours
+            total_hours = (hour + added_hours) % 24
             return (total_hours,new_min)
 
         else:
