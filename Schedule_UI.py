@@ -2,14 +2,15 @@ import tkinter as tk
 import pandas as pd
 
 class Schedule_UI:
-    def __init__(self,schedule_list,time_interval,start_time):
+    def __init__(self,schedule_list,time_interval,start_hour,start_min):
         self.window = tk.Tk()
         self.window.title("Best Schedules!")
         self.schedule_list = schedule_list
         self.time_interval = time_interval
-        self.start_time = start_time
-        
-        
+        self.start_hour = start_hour
+        self.start_min = start_min
+
+
 
     def print_best_schedule(self,num):
         for i in range (0,num):
@@ -24,10 +25,13 @@ class Schedule_UI:
         title_frame.pack(fill=tk.X)
 
 
-        item_counter = 0
+        hour_min_pair = (self.start_hour,self.start_min)
 
 
         for i in range(0,len(one_schedule[0])):
+
+            start_time_string = self.get_time_string(hour_min_pair[0],hour_min_pair[1])
+            hour_min_pair = self.add_interval_to_time(hour_min_pair[0],hour_min_pair[1])
 
             task = one_schedule[0][i]
 
@@ -46,7 +50,7 @@ class Schedule_UI:
             time_frame = tk.Frame(master = frame, width=50, height=100, bg="salmon")
             name_frame = tk.Frame(master = frame, width=50, height=100, bg= name_frame_color)
 
-            time_label = tk.Label(master=time_frame, text=str(item_counter), bg="bisque")
+            time_label = tk.Label(master=time_frame, text=start_time_string, bg="bisque")
             name_label = tk.Label(master=name_frame, text=description, bg=name_frame_color)
 
             time_label.pack()
@@ -60,29 +64,48 @@ class Schedule_UI:
             name_label.pack()
             frame.pack(fill=tk.X)
 
-            item_counter = item_counter + 1
+            
             schedule_frame.pack(side = tk.LEFT)
 
-        saveButton = tk.Button( master = schedule_frame, text ="Save Schedule",command = lambda: self.save_schedule(index))
-        saveButton.pack()
+        save_button = tk.Button( master = schedule_frame, text ="Save Schedule",command = lambda: self.save_schedule(index))
+        save_button.pack()
 
     def save_schedule(self,index):
         chosen_schedule = self.schedule_list[index][0]
 
         for i,e in enumerate(chosen_schedule):
-            if (not chosen_schedule[i] == 'break'):
-                print(e)
+            if (not isinstance(e, str)):
                 chosen_schedule[i] = e.name
         
         time_list = []
+        hour_min_pair = (self.start_hour,self.start_min)
+
 
         for i in range(0,len(chosen_schedule)):
-            time_list.append(i)
+            start_time_string = self.get_time_string(hour_min_pair[0],hour_min_pair[1])
+            hour_min_pair = self.add_interval_to_time(hour_min_pair[0],hour_min_pair[1])
+            time_list.append(start_time_string)
 
         d = {'Time': time_list,'Task': chosen_schedule}
 
         df = pd.DataFrame(d)
         print(df)
+        df.to_csv('schedule.csv',index=False)
+
+    def get_time_string(self, hour,min):
+        return str(hour) + ":" + str(min)
+
+    def add_interval_to_time(self,hour,min):
+        new_min = min + self.time_interval
+
+        if (new_min > 60):
+            added_hours = new_min // 60
+            new_min = new_min - (added_hours * 60)
+            total_hours = hour + added_hours
+            return (total_hours,new_min)
+
+        else:
+            return (hour,new_min)
 
         
 

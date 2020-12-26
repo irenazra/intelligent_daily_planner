@@ -149,7 +149,7 @@ class User_Input_Interface:
         #create a scheduler 
         my_scheduler =scheduler.Scheduler(wbr,self.tasks,time_interval,time_range,cross_over_prob,mutation_prob,pop_size,generations)
         schedules = my_scheduler.create_schedule()
-        UI = Schedule_UI.Schedule_UI(schedules,time_interval,start_hour)
+        UI = Schedule_UI.Schedule_UI(schedules,time_interval,start_hour,start_min)
         UI.loop(10)
 
        
