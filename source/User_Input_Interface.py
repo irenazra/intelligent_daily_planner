@@ -1,27 +1,54 @@
 import tkinter as tk
 from tkinter import ttk
 import tkinter.font
+
 import Task
 import scheduler
 import Schedule_UI
+
 import random
 
 class User_Input_Interface:
+    """
+    A user interface that collects information about the users tasks and scheduling preferences
+    Creates a scheduler, and presents the best schedules to the user
+
+    ---------
+     Methods
+    ---------   
+    loop () 
+        Places all the widgets on the window 
+        Starts the mainloop of the window
+        
+
+    """
     def __init__(self):
+
+        #create the window
         self.window = tk.Tk()
         self.window.title("The Intelligent Scheduler!")
-        self.tasks = set()
-        self.font = tk.font.Font(family="Lucida Grande", size=20)
-        self.color_set = self.define_task_colors()
         self.window['bg'] = "bisque"
-    
 
+        #create a color set to be used in the UI
+        self.color_set = self.define_task_colors()
+
+        #keep track of tasks
+        self.tasks = set()
+
+        #define the title font and size
+        self.font = tk.font.Font(family="Lucida Grande", size=20)
+
+       
+    #Creates a frame containing all the widgets to support addition of tasks
+    #Places this frame to the window
     def enter_task_UI_frame(self):
 
+        #Create the main frame and the main label
         enter_task_frame = tk.Frame(master = self.window, width=600, height=100, bg="bisque")
         enter_task_label =  tk.Label(master= enter_task_frame, text="Enter a task!", bg="bisque", font = self.font)
         enter_task_label.pack()
 
+        #Widgets to get the description of the task
         name_frame = tk.Frame(master = enter_task_frame, width=100, height=100, bg="bisque")
         name_label = tk.Label(master= name_frame, text="Description", bg="salmon")
         name_entry_widget = tk.Entry(master = name_frame)
@@ -30,6 +57,7 @@ class User_Input_Interface:
         name_entry_widget.pack()
         name_frame.pack(side = tk.LEFT)
 
+        #widgets to get the estimated completion time for the task
         time_frame = tk.Frame(master = enter_task_frame, width=100, height=100, bg="bisque")
         time_label = tk.Label(master= time_frame, text="Time Required", bg="salmon")
         time_values = [20,40,60,80,100,120,140,160,180,200,220,240,260,280,300]
@@ -39,6 +67,7 @@ class User_Input_Interface:
         time_combobox.pack()
         time_frame.pack(side = tk.LEFT)
 
+        #widgets to get information about how much the user enjoys this task
         desire_frame = tk.Frame(master = enter_task_frame, width=100, height=100, bg="bisque")
         desire_label = tk.Label(master= desire_frame, text="Enjoyment Rate", bg="salmon")
         desire_values = [1,2,3,4,5,6,7,8,9,10]
@@ -48,6 +77,7 @@ class User_Input_Interface:
         desire_combobox.pack()
         desire_frame.pack(side = tk.LEFT,padx=10)
 
+        #widgets to get the importance or urgency of the task
         importance_frame = tk.Frame(master = enter_task_frame, width=100, height=100, bg="bisque")
         importance_label = tk.Label(master= importance_frame, text="Importance/Urgence", bg="salmon")
         importance_combobox = ttk.Combobox(master = importance_frame, values = desire_values,width=4)
@@ -56,32 +86,40 @@ class User_Input_Interface:
         importance_combobox.pack()
         importance_frame.pack(side = tk.LEFT,padx=10)
 
+        #widgets to get whether the task needs to be completed in one sitting
         self.check_value = tk.BooleanVar()
         dividable_checkbutton = tk.Checkbutton(master = enter_task_frame, text = "Needs to be completed in one sitting",bg="salmon",var=self.check_value,onvalue= False, 
                             offvalue=True)
         dividable_checkbutton.pack(side = tk.LEFT)
         self.dividable_checkbutton = dividable_checkbutton
 
+        #button to facilitate the addition of a task
         add_button = tk.Button(master = enter_task_frame, command = self.add_task, text = "Add Task",bg="bisque")
         add_button.pack()
 
+
         enter_task_frame.pack()
 
+
+    #create a frame to hold all the tasks
     def show_entered_tasks(self):
         tasks_frame= tk.Frame(master = self.window, width=630, height=25,bg="bisque")
         tasks_frame.pack()
         self.tasks_frame = tasks_frame
 
+           
+    #Creates a frame containing all the widgets to support scheduler options
+    #Places this frame to the window
     def add_scheduler_options(self):
+
+        #Create the main frame and the main label
         options_frame= tk.Frame(master = self.window, width=500, height=100,bg="bisque")
         options_frame.pack()
         self.options_frame = options_frame
-
         options_label = tk.Label(master= options_frame, text="Scheduler Options",font = self.font,bg="bisque")
         options_label.pack()
 
-
-
+        #widgets to get the time interval of the schedule
         time_interval_frame = tk.Frame(master = options_frame, width=100, height=100, bg="bisque")
         time_interval_label = tk.Label(master= time_interval_frame, text="Time Interval", bg="salmon")
         time_interval_values = [20,40,60,80,100,120]
@@ -91,8 +129,7 @@ class User_Input_Interface:
         time_interval_combobox.pack()
         time_interval_frame.pack(side = tk.LEFT)
 
-
-
+        #widgets to get the work interval ratio compared to the entire length of the schedule
         wbr_frame = tk.Frame(master = options_frame, width=100, height=100, bg="bisque")
         wbr_label = tk.Label(master= wbr_frame, text="Work ratio of schedule", bg="salmon")
         wbr_values = [1,0.9,0.8,0.7,0.6,0.5,0.4]
@@ -102,6 +139,7 @@ class User_Input_Interface:
         wbr_combobox.pack()
         wbr_frame.pack(side = tk.LEFT,padx=10)
 
+        #widgets to get the start time of the schedule
         start_frame = tk.Frame(master = options_frame, width=100, height=100, bg="bisque")
         start_label = tk.Label(master= start_frame, text="Start time", bg="salmon")
         min_values = [0,10,20,30,40,50]
@@ -115,7 +153,7 @@ class User_Input_Interface:
         start_min_combobox.pack(side =tk.LEFT)
         start_frame.pack(side = tk.LEFT)
 
-
+        #widgets to get the end time of the schedule
         end_frame = tk.Frame(master = options_frame, width=100, height=100, bg="bisque")
         end_label = tk.Label(master= end_frame, text="End time", bg="salmon")
         end_min_combobox = ttk.Combobox(master = end_frame, values = min_values,width=2)
@@ -127,13 +165,12 @@ class User_Input_Interface:
         end_min_combobox.pack(side =tk.LEFT)
         end_frame.pack(side = tk.LEFT)
 
-
-
-
-
+        #Button to trigger the creation of schedules
         create_schedule_button = tk.Button(master = options_frame, command = self.create_scheduler, text = "Create Schedule!",bg="pale green")
         create_schedule_button.pack()
 
+
+    #Create a scheduler using the information received by the user
     def create_scheduler(self):
         # get information from the scheduler option widgets
         time_interval = (int) (self.time_interval_combobox.get())
@@ -144,24 +181,20 @@ class User_Input_Interface:
         end_min =(int) (self.end_min_combobox.get())
 
         time_range = self.give_minute_difference(start_hour,start_min,end_hour,end_min)
-        print("TIME RANGE IS:   ")
-        print(time_range)
-
-
         cross_over_prob = 0.8
         mutation_prob = 0.7
         pop_size = 200
         generations = 10
         
-
-        #create a scheduler 
+        #create a scheduler and determine the best schedules
         my_scheduler =scheduler.Scheduler(wbr,self.tasks,time_interval,time_range,cross_over_prob,mutation_prob,pop_size,generations)
         schedules = my_scheduler.create_schedule()
+
+        #Create UI representing the best schedules
         UI = Schedule_UI.Schedule_UI(schedules,time_interval,start_hour,start_min)
         UI.loop(5)
 
-       
-
+    #Calculate the minute difference between two time points
     def give_minute_difference(self,hour1,min1,hour2,min2):
 
         hour_diff = hour2 - hour1
@@ -177,13 +210,8 @@ class User_Input_Interface:
 
         return (hour_diff * 60 ) + min_diff
 
-
-
-
-
-
-
-    #TODO Handle the cases where the user input does not make sense, have default values etc.
+    #Create a task using the information received from the user
+    #Add this task to the tasks set and to the UI
     def add_task(self):
         task_description = self.name_entry_widget.get()
         est_comp_time = (int) (self.time_combobox.get())
@@ -201,6 +229,7 @@ class User_Input_Interface:
         task_label.grid()
         
 
+    #Colors used in UI
     def define_task_colors(self):
         color_set = set()
         color_set.add("pink")
@@ -223,26 +252,22 @@ class User_Input_Interface:
         color_set.add("aquamarine")
         return color_set
 
-
-
-
-
-
-
-    
-
-
-
-
     def loop(self):
+
+        """
+        Creates the user input interface elements and enables the user to enter tasks and specify scheduler parameters
+        Starts the mainloop of the window
+
+        """
+        
         self.enter_task_UI_frame()
         self.show_entered_tasks()
         self.add_scheduler_options()
         self.window.mainloop()
 
 if __name__ == "__main__":
-    test = User_Input_Interface()
-    test.loop()
+    intelligent_scheduler = User_Input_Interface()
+    intelligent_scheduler.loop()
 
 
 

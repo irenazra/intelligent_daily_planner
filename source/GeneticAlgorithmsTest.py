@@ -4,6 +4,10 @@ import Genetic_Algorithms
 
 
 class GeneticAlgorithmsTest(unittest.TestCase):
+    """
+    A unittest class that can be used to test and debug the functions in Genetic_Algorithms.py file
+
+    """
 
     work_break_ratio = 0.8
     total_items = 4
@@ -67,17 +71,6 @@ class GeneticAlgorithmsTest(unittest.TestCase):
                     print("break")
                 else:
                     print(l.name)
-
-
-
-
-
-
-
-
-
-
-
 
 
 
