@@ -62,7 +62,6 @@ def test():
     generations = 10
     my_schedule = Scheduler(wbr,tasks,time_interval,time_range,cross_over_prob,mutation_prob,pop_size,generations)
     schedule = my_schedule.create_schedule()
-    print(schedule)
     UI = Schedule_UI.Schedule_UI(schedule,time_interval,start_time)
     UI.loop(5)
 

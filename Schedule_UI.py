@@ -1,4 +1,5 @@
 import tkinter as tk
+import pandas as pd
 
 class Schedule_UI:
     def __init__(self,schedule_list,time_interval,start_time):
@@ -8,39 +9,36 @@ class Schedule_UI:
         self.time_interval = time_interval
         self.start_time = start_time
         
+        
 
     def print_best_schedule(self,num):
         for i in range (0,num):
-            self.show_schedule(self.schedule_list[i])
-        
-        
+            self.show_schedule(self.schedule_list[i],i)
 
-    def show_schedule(self, one_schedule):
+
+    def show_schedule(self, one_schedule,index):
         schedule_frame = tk.Frame(master = self.window,width = 200, height = 700)
         title_frame = tk.Frame(master = schedule_frame, width=100, height=100, bg="turquoise2")
         title_label = tk.Label(master= title_frame, text="Schedule", bg="turquoise2")
         title_label.pack()
         title_frame.pack(fill=tk.X)
 
-        
-        
 
-        one_schedule[0].reverse()
         item_counter = 0
 
 
         for i in range(0,len(one_schedule[0])):
 
-
             task = one_schedule[0][i]
 
-        
             if ( task == "break"):
                 description = "break"
                 name_frame_color = "pale green"
             else:
                 description = task.name
                 name_frame_color = "salmon"
+
+            
 
             frame = tk.Frame(master=schedule_frame, width=100, height=100, bg="bisque")
             
@@ -55,7 +53,6 @@ class Schedule_UI:
             name_label.pack()
 
 
-
             time_frame.pack(side = tk.LEFT)
             name_frame.pack(side = tk.LEFT)
 
@@ -65,15 +62,35 @@ class Schedule_UI:
 
             item_counter = item_counter + 1
             schedule_frame.pack(side = tk.LEFT)
+
+        saveButton = tk.Button( master = schedule_frame, text ="Save Schedule",command = lambda: self.save_schedule(index))
+        saveButton.pack()
+
+    def save_schedule(self,index):
+        chosen_schedule = self.schedule_list[index][0]
+
+        for i,e in enumerate(chosen_schedule):
+            if (not chosen_schedule[i] == 'break'):
+                print(e)
+                chosen_schedule[i] = e.name
+        
+        time_list = []
+
+        for i in range(0,len(chosen_schedule)):
+            time_list.append(i)
+
+        d = {'Time': time_list,'Task': chosen_schedule}
+
+        df = pd.DataFrame(d)
+        print(df)
+
         
 
-    def clean_fitness_info (self, reversed_schedule):
-        cleaned = []
 
-        for i in reversed_schedule:
-            cleaned.append(i[0])
 
-        return cleaned
+
+
+
 
 
     def loop (self,num_schedules):

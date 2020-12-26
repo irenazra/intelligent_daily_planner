@@ -98,7 +98,7 @@ class User_Input_Interface:
 
         start_frame = tk.Frame(master = options_frame, width=100, height=100, bg="turquoise2")
         start_label = tk.Label(master= start_frame, text="Start time", bg="turquoise2")
-        min_values = [10,20,30,40,50]
+        min_values = [0,10,20,30,40,50]
         hour_values = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24]
         start_min_combobox = ttk.Combobox(master = start_frame, values = min_values)
         start_hour_combobox = ttk.Combobox(master = start_frame, values = hour_values)
@@ -142,7 +142,7 @@ class User_Input_Interface:
 
         cross_over_prob = 0.8
         mutation_prob = 0.7
-        pop_size = 20
+        pop_size = 100
         generations = 10
         
 
@@ -150,19 +150,19 @@ class User_Input_Interface:
         my_scheduler =scheduler.Scheduler(wbr,self.tasks,time_interval,time_range,cross_over_prob,mutation_prob,pop_size,generations)
         schedules = my_scheduler.create_schedule()
         UI = Schedule_UI.Schedule_UI(schedules,time_interval,start_hour)
-        UI.loop(5)
+        UI.loop(10)
 
        
 
     def give_minute_difference(self,hour1,min1,hour2,min2):
-        print(hour1)
-        print(min1)
-        print(hour2)
-        print(min2)
+        #print(hour1)
+        #print(min1)
+        #print(hour2)
+        #print(min2)
         hour_diff = hour2 - hour1
-        print(hour_diff)
+        #print(hour_diff)
         min_diff = min2 - min1
-        print(min_diff)
+        #print(min_diff)
 
         return (hour_diff * 60 ) + min_diff
 

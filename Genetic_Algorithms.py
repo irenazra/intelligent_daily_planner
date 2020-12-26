@@ -2,15 +2,59 @@ import random
 from collections import defaultdict
 
 class Genetic_Algorithms: 
+    """A genetic algorithms architecture that can be used to create and improve daily planning.
+
+        ---------
+         Methods
+        ---------
+        fitness (schedule,work_break_ratio)
+                Calculates the fitness score of a particular daily schedule
+        initialize (population_size,tasks,work_break_ratio,total_items) 
+                Initializes the very first generation of schedules randomly 
+                and assesses the fitness of individuals in this generation
+        mate_and_mutate (parent_one, parent_two,cross_over_prob, mutation_prob,total_items)  
+                Facilitates cross-overs between parents and mutations in the offspring
+                taking cross over and mutation probabilities into account
+        next_generation (population, population_size,total_items)                 
+                Creates a new generation (offsprings) from the parents (the current generation)
+        assess_fitness_of_generation (new_generation, work_break_ratio) 
+                Calls the fitness function on all the individuals in the generation
+        """
+
     def __init__ (self,interval,cross_over_prob, mutation_prob,wbr) :
+
+        """ 
+        ------------
+         Parameters
+        ------------
+        interval : int
+            the intervals in the schedule that define a period over which a specific task is to be performed
+        cross_over_prob : float
+            the probability of a cross over happening between two parents
+        mutation_prob : float
+            the probability of a mutation happening to offspring
+        wbr : float
+            "work break ratio" 
+            the ratio of work items in the schedule compared to the overall length of the schedule
+        """
+
         self.interval = interval 
         self.cross_over_prob = cross_over_prob
         self.mutation_prob = mutation_prob
         self.wbr = wbr
        
 
-    #Define fitness function
     def fitness(self,schedule,work_break_ratio):
+        """
+        ------------
+         Parameters
+        ------------
+        schedule : list
+            represents the schedule, contains all the tasks and breaks in order
+        work_break_ratio : float
+            the ratio of work items in the schedule compared to the overall length of the schedule
+
+        """
 
         score = 0
         
@@ -160,7 +204,7 @@ class Genetic_Algorithms:
             if (rand < work_break_ratio):
                 random_task = random.choice(list(tasks))
                 if (not random_task.can_divide):
-                    self.make_individual_helper(tasks,counter,chromosome,random_task,total_items)
+                    counter =  counter + self.make_individual_helper(tasks,counter,chromosome,random_task,total_items)
                 else:
                     chromosome.append(random_task)
                     counter = counter + 1
@@ -171,12 +215,13 @@ class Genetic_Algorithms:
         return chromosome
 
     def make_individual_helper(self,tasks,counter,chromosome,random_task,total_items):
-       
-        num_items_needed = (int) (random_task.ect/self.interval)
-        if (counter + num_items_needed <total_items):
+        counter = 0
+        num_items_needed = (int) (random_task.ect/self.interval) 
+        if (counter + num_items_needed < total_items):
             for i in range(0,num_items_needed):
                 chromosome.append(random_task)
                 counter = counter + 1
+        return (counter)
 
                 
         
@@ -185,12 +230,13 @@ class Genetic_Algorithms:
         cross_num = (random.uniform(0,1)) 
         mutation_num = (random.uniform(0,1)) 
         children = [parent_one, parent_two]
-        
+
         if (cross_num <= cross_over_prob):
             children = self.cross_over(parent_one,parent_two,total_items)
-            
+
         if (mutation_num <= mutation_prob):
             children = self.mutate(children,total_items)
+
             
         return children
         
