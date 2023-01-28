@@ -41,11 +41,6 @@ When the user is done adjusting the scheduler options, they can click the "Creat
 
 The user can save the schedule or schedules that they like by clicking on the "Save Schedule" button located under each schedule. The schedule will be saved in the main directory as a csv file, and then can be further customized.
 
-## Testing
-
-- The genetic algorithm was tested through a unittest suit in the GeneticAlgorithmsTest.py file. 
-
-- The scheduler can be tested by running the scheduler.py file and editing the test() function.
 
 
 
